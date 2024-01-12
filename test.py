@@ -5,22 +5,21 @@ from enum import Enum
 app = FastAPI()
 
 
-class Tag(Enum):
+class Tag(str, Enum):
+    immutable = "immutable"
+    mutable = "mutable"
 
-    MUTABLE = 1
-    IMMUTABLE = 2
 
-
-@app.post('/a', tags=[Tag.MUTABLE.name], summary='Функция "A"')
+@app.post('/a', tags=[Tag.immutable.name], summary='Функция "A"')
 def a() -> str:
     """
-    В данном методе возвращается изменяемый тип данных.
+    В данном методе возвращается неизменяемый тип данных.
     """
     return 'Вот это ответ!'
 
 
 @app.get(
-        '/b', tags=[Tag.MUTABLE.name],
+        '/b', tags=[Tag.mutable.name],
         summary='Функция "B"',
         description='Данный метод возвращает изменяемый тип данных'
     )
@@ -28,7 +27,7 @@ def b() -> list[str]:
     return ['Вот', 'это', 'ответ!']
 
 
-@app.post('/c', tags=[Tag.IMMUTABLE.name], summary='Функция "C"')
+@app.post('/c', tags=[Tag.immutable.name], summary='Функция "C"')
 def c() -> int:
     """
     В данном методе возвращается неизменяемый тип данных.
@@ -37,7 +36,7 @@ def c() -> int:
 
 
 @app.get(
-        '/d', tags=[Tag.MUTABLE.name],
+        '/d', tags=[Tag.mutable.name],
         summary='Функция "D"',
         description='Данный метод возвращает изменяемый тип данных'
     )
