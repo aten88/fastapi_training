@@ -1,11 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Path, Query
 from typing import Optional
-# import uvicorn
 from enum import Enum
 
 app = FastAPI()
-# app = FastAPI(docs_url=None, redoc_url=None) - отключить SWAGGER и REDOCS
-# app = FastAPI(docs_url='/swagger')
 
 
 class EduactionLevel(str, Enum):
@@ -23,13 +20,21 @@ def hello_author():
         '/{name}',
         tags=['common methods'],
         summary='Общее приветствие',
-        response_description='Полная строка приветствия'
+        response_description='Полная строка приветствия',
+
     )
 def greetings(
-    name: str,
-    surname: str,
-    age: Optional[int] = None,
-    is_staff: bool = False,
+    *,
+    name: str = Path(
+        ..., min_length=2, max_length=20,
+        title='Полное имя', description='Можно вводить в любом регистре'
+    ),
+    surname: list[str] = Query(..., min_length=2, max_length=50),
+    # cyrillic_string: str = Query(
+    #     'Здесь только кириллица', regex='^[А-Яа-яЁё ]+$'
+    # ),
+    age: Optional[int] = Query(None, gt=4, le=99),
+    is_staff: bool = Query(False, alias='is-staff', include_in_schema=False),
     education_level: Optional[EduactionLevel] = None,
 ) -> dict[str, str]:
     """
@@ -37,10 +42,10 @@ def greetings(
         - **name**: имя
         - **surname**: фамилия
         - **age**: возраст (опционально)
-        - **is_staff**: является ли пользователь сотрудником
         - **education_level**: уровень образования (опционально)
     """
-    result = ' '.join([name, surname])
+    surnames = ' '.join(surname)
+    result = ' '.join([name, surnames])
     result = result.title()
     if age is not None:
         result += ', ' + str(age)
@@ -49,7 +54,3 @@ def greetings(
     if is_staff:
         result += ', сотрудник'
     return {'Hello': result}
-
-
-# if __name__ == '__main__':
-#     uvicorn.run('main:app', reload=True)

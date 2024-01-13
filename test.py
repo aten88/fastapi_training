@@ -1,8 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
 from enum import Enum
 
 app = FastAPI()
+
+
+@app.get('/math-sum')
+def math_sum(
+    add: list[float] = Query(
+        None, gt=0, lt=9.99,
+        title='Список чисел',
+        description='Принимает список дробных чисел'
+    )
+):
+    result = 0
+    for param in add:
+        result += param
+    return result
 
 
 class Tag(str, Enum):
@@ -13,7 +27,7 @@ class Tag(str, Enum):
 @app.post('/a', tags=[Tag.immutable.name], summary='Функция "A"')
 def a() -> str:
     """
-    В данном методе возвращается неизменяемый тип данных.
+    Данный метод возвращает неизменяемый тип данных.
     """
     return 'Вот это ответ!'
 
@@ -30,7 +44,7 @@ def b() -> list[str]:
 @app.post('/c', tags=[Tag.immutable.name], summary='Функция "C"')
 def c() -> int:
     """
-    В данном методе возвращается неизменяемый тип данных.
+    Данный метод возвращает неизменяемый тип данных.
     """
     return 42
 
