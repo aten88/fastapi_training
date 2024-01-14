@@ -1,58 +1,36 @@
-from fastapi import FastAPI, Query
-
 from enum import Enum
+from typing import Optional
+
+from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
 
-@app.get('/math-sum')
-def math_sum(
-    add: list[float] = Query(
-        None, gt=0, lt=9.99,
-        title='Список чисел',
-        description='Принимает список дробных чисел'
-    )
-):
-    result = 0
-    for param in add:
-        result += param
-    return result
+class AcceptedCategory(str, Enum):
+    OUTPUT_DEVICES = 'Принтеры'
+    VISUAL_DEVICES = 'Мониторы'
+    OPTIONAL_DEVICES = 'Доп. оборудование'
+    INPUT_DEVICES = 'Устройства ввода'
 
 
-class Tag(str, Enum):
-    immutable = "immutable"
-    mutable = "mutable"
+class Person(BaseModel):
+    name: str
+    surname: str
+    age: Optional[int]
+    is_staff: bool = False
 
 
-@app.post('/a', tags=[Tag.immutable.name], summary='Функция "A"')
-def a() -> str:
-    """
-    Данный метод возвращает неизменяемый тип данных.
-    """
-    return 'Вот это ответ!'
+class AuctionLot(BaseModel):
+    category: AcceptedCategory
+    name: str
+    model: Optional[str]
+    start_price: int = 1000
+    seller: Person
 
 
-@app.get(
-        '/b', tags=[Tag.mutable.name],
-        summary='Функция "B"',
-        description='Данный метод возвращает изменяемый тип данных'
-    )
-def b() -> list[str]:
-    return ['Вот', 'это', 'ответ!']
-
-
-@app.post('/c', tags=[Tag.immutable.name], summary='Функция "C"')
-def c() -> int:
-    """
-    Данный метод возвращает неизменяемый тип данных.
-    """
-    return 42
-
-
-@app.get(
-        '/d', tags=[Tag.mutable.name],
-        summary='Функция "D"',
-        description='Данный метод возвращает изменяемый тип данных'
-    )
-def d() -> dict[str, str]:
-    return {'Вот': 'это ответ!'}
+@app.post('/new-lot')
+def register_lot(lot: AuctionLot):
+    # Здесь мог бы быть код для сохранения заявки,
+    # но мы не станем его писать. И вам не надо.
+    return {'result': 'Ваша заявка зарегистрирована!'}
