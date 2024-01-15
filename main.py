@@ -1,25 +1,9 @@
-from typing import Optional, Union
-from enum import Enum
-
 from fastapi import FastAPI
-from pydantic import BaseModel
+
+from schemas import Person
 
 
 app = FastAPI()
-
-
-class EduactionLevel(str, Enum):
-    SECONDARY = 'Среднее образование'
-    SPECIAL = 'Среднее специальное образование'
-    HIGHER = 'Высшее образование'
-
-
-class Person(BaseModel):
-    name: str
-    surname: Union[str, list[str]]
-    age: Optional[int]
-    is_staff: bool = False
-    education_level: Optional[EduactionLevel]
 
 
 @app.post('/hello')

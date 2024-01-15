@@ -1,36 +1,32 @@
-from enum import Enum
-from typing import Optional
+import re
 
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 
 app = FastAPI()
 
-
-class AcceptedCategory(str, Enum):
-    OUTPUT_DEVICES = 'Принтеры'
-    VISUAL_DEVICES = 'Мониторы'
-    OPTIONAL_DEVICES = 'Доп. оборудование'
-    INPUT_DEVICES = 'Устройства ввода'
+FORBIDDEN_NAMES = [
+    'Luke Skywalker',
+    'Darth Vader',
+    'Leia Organa',
+    'Han Solo',
+]
 
 
 class Person(BaseModel):
     name: str
     surname: str
-    age: Optional[int]
-    is_staff: bool = False
+
+    @root_validator(skip_on_failure=True)
+    def cant_use_forbidden_names(cls, value):
+        checked_value = ' '.join([value['name'], value['surname']])
+        if re.search('|'.join(FORBIDDEN_NAMES), checked_value, re.IGNORECASE):
+            raise ValueError('Не используйте имена из киновселенной STAR WARS')
+        return value
 
 
-class AuctionLot(BaseModel):
-    category: AcceptedCategory
-    name: str
-    model: Optional[str]
-    start_price: int = 1000
-    seller: Person
-
-
-@app.post('/new-lot')
-def register_lot(lot: AuctionLot):
-    # Здесь мог бы быть код для сохранения заявки,
-    # но мы не станем его писать. И вам не надо.
-    return {'result': 'Ваша заявка зарегистрирована!'}
+@app.post('/hello')
+def greetings(person: Person) -> dict[str, str]:
+    result = ' '.join([person.name, person.surname])
+    result = result.title()
+    return {'Hello': result}
