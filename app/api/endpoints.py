@@ -1,12 +1,11 @@
-from fastapi import FastAPI, Body
+from fastapi import APIRouter, Body
 
-from schemas import Person
+from app.schemas.schemas import Person
+
+router = APIRouter()
 
 
-app = FastAPI()
-
-
-@app.post('/hello')
+@router.post('/hello')
 def greetings(person: Person = Body(
     ..., examples=Person.Config.schema_extra['examples']
     )
