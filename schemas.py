@@ -26,6 +26,43 @@ class Person(BaseModel):
     class Config:
         title = 'Класс приветствия'
         min_anystr_length = 2
+        schema_extra = {
+            'examples': {
+                'single_surname': {
+                    'summary': 'Одна фамилия',
+                    'description': 'Одиночная фамилия передается строкой',
+                    'value': {
+                       'name': 'Taras',
+                       'surname': 'Belov',
+                       'age': 20,
+                       'is_staff': False,
+                       'education_level': 'Среднее образование'
+                    }
+                },
+                'multiple_surnames': {
+                    'summary': 'Несколько фамилий',
+                    'description': 'Несколько фамилий передаются списком',
+                    'value': {
+                       'name': 'Eduardo',
+                       'surname': ['Santos', 'Tavares'],
+                       'age': 20,
+                       'is_staff': False,
+                       'education_level': 'Высшее образование'
+                    }
+                },
+                'invalid': {
+                    'summary': 'Некорректный запрос',
+                    'description': 'Возраст передается только целым числом',
+                    'value': {
+                        'name': 'Eduardo',
+                        'surname': ['Santos', 'Tavares'],
+                        'age': 'forever young',
+                        'is_staff': False,
+                        'education_level': 'Среднее специальное образование'
+                    }
+                }
+            }
+        }
 
     @validator('name')  # В качестве аргумента валидатору передается имя поля,
     # которое нужно проверить.
