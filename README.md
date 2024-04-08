@@ -1,1 +1,1 @@
-# fastapi_training
+# Учебный проект по FastApi
