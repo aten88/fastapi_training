@@ -9,7 +9,7 @@
 - Правила документирования классов.
 - Работа с инструментами отладки Swagger, Redoc.
 - Виды структуры проекта.
-#### Стек проекта: Python3.9, FastAPI, Uvicorn, Pydantic, Swagger, Redoc
+#### Стек проекта: Python3.9, FastAPI, Uvicorn, Pydantic, Swagger, Redoc.
 ## Установка и запуск проекта:
 - клонировать репозиторий:
     ``` 
